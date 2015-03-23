@@ -1,0 +1,4 @@
+workspacesubscription_controller:
+    resource: "@FormaLibreWorkspaceSubscriptionBundle/Controller/WorkspaceSubscriptionController.php"
+    type: annotation
+    prefix: /
