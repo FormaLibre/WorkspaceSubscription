@@ -57,6 +57,7 @@ class WorkspaceSubscriptionController extends Controller
             $user->setFirstName($userData->first_name);
             $user->setLastName($userData->last_name);
             $user->setUsername($userData->username);
+            $user->setPassword(uniqid());
             $user->setMail($userData->email);
             $user = $this->userManager->createUserWithRole($user, PlatformRoles::USER);
             $this->mailManager->sendForgotPassword($user);
