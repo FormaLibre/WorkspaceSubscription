@@ -56,6 +56,7 @@ class WorkspaceSubscriptionController extends Controller
             $user->setUsername($userData->username);
             $user->setPassword($userData->password);
             $user->setMail($userData->email);
+            $user->setSalt($userData->salt);
             $user = $this->userManager->createUserWithRole($user, PlatformRoles::USER);
         }
 
