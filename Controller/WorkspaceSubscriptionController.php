@@ -27,6 +27,9 @@ class WorkspaceSubscriptionController extends Controller
 
     /** @DI\Inject("%claroline.param.templates_directory%") */
     private $templateDir;
+    
+    /** @DI\Inject("%claroline.manager.mail_manager%") */
+    private $mailManager;
 
     /** @DI\Inject("doctrine.orm.entity_manager") */
     private $em;
@@ -54,10 +57,9 @@ class WorkspaceSubscriptionController extends Controller
             $user->setFirstName($userData->first_name);
             $user->setLastName($userData->last_name);
             $user->setUsername($userData->username);
-            $user->setPassword($userData->password);
             $user->setMail($userData->email);
-            $user->setSalt($userData->salt);
             $user = $this->userManager->createUserWithRole($user, PlatformRoles::USER);
+            $this->mailManager->sendForgotPassword($user);
         }
 
         $config = Configuration::fromTemplate(
