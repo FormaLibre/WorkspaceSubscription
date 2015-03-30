@@ -1,3 +1,4 @@
 parameters:
     #use the same from the InvoiceBundle
     formalibre_encryption_secret_validation: bcb04b7e103a0cd8b54763051cef08bc55abe029fdebae5e1d417e2ffb2a00a3 #you obv need to change it
+    formalibre_decrypt: false

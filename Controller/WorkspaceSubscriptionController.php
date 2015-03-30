@@ -42,6 +42,7 @@ class WorkspaceSubscriptionController extends Controller
         $postData = $this->request->request;
         $this->logger->debug('Creating workspace...');
         $payload = $this->decrypt($postData->get('payload'));
+        $this->logger->debug($payload);
         $data = json_decode($payload);
         $userData = $data->user;
         $workspaceData = $data->workspace;
@@ -125,6 +126,7 @@ class WorkspaceSubscriptionController extends Controller
 
     private function decrypt($payload)
     {
+        if (!$this->container->getParameter('formalibre_decrypt')) return $payload;
         $ciphertextDec = base64_decode($payload);
         $ivSize = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_192, MCRYPT_MODE_CBC);
         $ivDec = substr($ciphertextDec, 0, $ivSize);
