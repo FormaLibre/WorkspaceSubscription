@@ -27,12 +27,16 @@ class WorkspaceSubscriptionController extends Controller
 
     /** @DI\Inject("%claroline.param.templates_directory%") */
     private $templateDir;
-    
+
     /** @DI\Inject("%claroline.manager.mail_manager%") */
     private $mailManager;
 
     /** @DI\Inject("doctrine.orm.entity_manager") */
     private $em;
+
+    /** @DI\Inject("router") */
+    private $router;
+
 
     /**
      * @EXT\Route("/create", name="formalibre_workspacesubscription_create")
@@ -50,7 +54,10 @@ class WorkspaceSubscriptionController extends Controller
         $userData = $data->user;
         $workspaceData = $data->workspace;
         //this is ok until here !
-        $user = $this->userManager->getOneUserByUsername($userData->username);
+        $user = $this->userManager->getUserByUsernameAndMail($userData->username, $userData->email);
+
+        //what to do if on or the other are already in use ?
+        //let's say the mail must be validated, then we can create a new username !
 
         if (!$user) {
             $user = new User();
@@ -60,7 +67,6 @@ class WorkspaceSubscriptionController extends Controller
             $user->setPassword(uniqid());
             $user->setMail($userData->email);
             $user = $this->userManager->createUserWithRole($user, PlatformRoles::USER);
-            $this->mailManager->sendForgotPassword($user);
         }
 
         $config = Configuration::fromTemplate(
@@ -146,5 +152,18 @@ class WorkspaceSubscriptionController extends Controller
         );
 
         return $plainTextDec;
+    }
+
+    private function setUserMailInfo(User $user)
+    {
+        $hash = $user->getResetPasswordHash();
+        $link = $this->router->generate('claro_security_reset_password', array('hash' => $hash), true);
+        $subject = $this->translator->trans('password_initialization', array(), 'platform');
+
+        $body = $this->container->get('templating')->render(
+            'FormaLibreWorkspaceSubscriptionBundle::initPassword.html.twig', array('user' => $user, 'link' => $link)
+        );
+
+        return $this->send($subject, $body, array($user));
     }
 }
