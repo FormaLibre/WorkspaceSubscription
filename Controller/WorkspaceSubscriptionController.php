@@ -28,7 +28,7 @@ class WorkspaceSubscriptionController extends Controller
     /** @DI\Inject("%claroline.param.templates_directory%") */
     private $templateDir;
 
-    /** @DI\Inject("%claroline.manager.mail_manager%") */
+    /** @DI\Inject("claroline.manager.mail_manager") */
     private $mailManager;
 
     /** @DI\Inject("doctrine.orm.entity_manager") */
