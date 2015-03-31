@@ -144,12 +144,13 @@ class WorkspaceSubscriptionController extends Controller
 
     private function decrypt($payload)
     {
-        if (!$this->container->getParameter('formalibre_decrypt')) return $payload;
+        $configHandler = $this->container->get('claroline.config.platform_config_handler');
+        if (!$configHandler->getParameter('formalibre_decrypt')) return $payload;
         $ciphertextDec = base64_decode($payload);
         $ivSize = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_192, MCRYPT_MODE_CBC);
         $ivDec = substr($ciphertextDec, 0, $ivSize);
         $ciphertextDec = substr($ciphertextDec, $ivSize);
-        $secret = $this->container->getParameter('formalibre_encryption_secret_validation');
+        $secret = $configHandler->getParameter('formalibre_encryption_secret_decrypt');
         $key = pack('H*', $secret);
         $plainTextDec = mcrypt_decrypt(
             MCRYPT_RIJNDAEL_192,
