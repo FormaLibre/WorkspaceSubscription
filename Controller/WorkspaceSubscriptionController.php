@@ -161,6 +161,9 @@ class WorkspaceSubscriptionController extends Controller
 
     private function sendUserMailInfo(User $user)
     {
+        $user->setResetPasswordHash(sha1(rand(1000, 10000) . $user->getUsername() . $user->getSalt()));
+        $this->em->persist($user);
+        $this->em->flush();
         $hash = $user->getResetPasswordHash();
         $link = $this->router->generate('claro_security_reset_password', array('hash' => $hash), true);
         $subject = $this->translator->trans('password_initialization', array(), 'platform');
