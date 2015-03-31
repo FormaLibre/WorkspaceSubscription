@@ -52,7 +52,6 @@ class WorkspaceSubscriptionController extends Controller
         $postData = $this->request->request;
         $this->logger->debug('Creating workspace...');
         $payload = $this->decrypt($postData->get('payload'));
-        $this->logger->debug($payload);
         $data = json_decode($payload);
         $userData = $data->user;
         $workspaceData = $data->workspace;
