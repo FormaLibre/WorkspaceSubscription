@@ -66,7 +66,8 @@ class WorkspaceSubscriptionController extends Controller
             $user->setUsername($userData->username);
             $user->setPassword(uniqid());
             $user->setMail($userData->email);
-            $user = $this->userManager->createUserWithRole($user, PlatformRoles::USER);
+            $this->userManager->createUser($user, false);
+            $this->sendUserMailInfo($user);
         }
 
         $config = Configuration::fromTemplate(
@@ -154,7 +155,7 @@ class WorkspaceSubscriptionController extends Controller
         return $plainTextDec;
     }
 
-    private function setUserMailInfo(User $user)
+    private function sendUserMailInfo(User $user)
     {
         $hash = $user->getResetPasswordHash();
         $link = $this->router->generate('claro_security_reset_password', array('hash' => $hash), true);
