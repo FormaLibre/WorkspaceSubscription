@@ -29,4 +29,9 @@ class FormaLibreWorkspaceSubscriptionBundle extends PluginBundle
     {
         return false;
     }
+
+    public function getRequiredFixturesDirectory($environment)
+    {
+        return 'DataFixtures';
+    }
 }
