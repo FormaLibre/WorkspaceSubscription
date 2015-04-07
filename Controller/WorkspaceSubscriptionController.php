@@ -97,7 +97,6 @@ class WorkspaceSubscriptionController extends Controller
         $this->em->persist($workspace);
         $this->em->flush();
         $returnData = array();
-        $this->sendWorkspaceCreationData($user, $workspace);
 
         return new JsonResponse(array(
             'code' => '200',
@@ -170,17 +169,6 @@ class WorkspaceSubscriptionController extends Controller
 
         $body = $this->container->get('templating')->render(
             'FormaLibreWorkspaceSubscriptionBundle::initPassword.html.twig', array('user' => $user, 'link' => $link)
-        );
-
-        return $this->mailManager->send($subject, $body, array($user));
-    }
-
-    private function sendWorkspaceCreationData(User $user, Workspace $workspace)
-    {
-        $subject = $this->translator->trans('workspace_creation', array(), 'platform');
-
-        $body = $this->container->get('templating')->render(
-            'FormaLibreWorkspaceSubscriptionBundle::workspaceCreation.html.twig', array('workspace' => $workspace)
         );
 
         return $this->mailManager->send($subject, $body, array($user));
