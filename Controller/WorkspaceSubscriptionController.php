@@ -56,7 +56,7 @@ class WorkspaceSubscriptionController extends Controller
         $userData = $data->user;
         $workspaceData = $data->workspace;
         //this is ok until here !
-        $user = $this->userManager->getUserByUsernameAndMail($userData->username, $userData->email);
+        $user = $this->userManager->getUserByEmail($userData->email);
 
         //what to do if on or the other are already in use ?
         //let's say the mail must be validated, then we can create a new username !
@@ -137,7 +137,7 @@ class WorkspaceSubscriptionController extends Controller
      */
     public function getWorkspaceAction(Workspace $workspace)
     {
-        return new JsonResponse($this->workspaceManager->toArray($workspace));
+        return new JsonResponse($this->toArray($workspace));
     }
 
     private function decrypt($payload)
@@ -172,5 +172,21 @@ class WorkspaceSubscriptionController extends Controller
         );
 
         return $this->mailManager->send($subject, $body, array($user));
+    }
+
+    public function toArray(Workspace $workspace)
+    {
+        $utilities = $this->container->get('claroline.utilities.misc');
+        $data = array();
+        $data['id'] = $workspace->getId();
+        $data['name'] = $workspace->getName();
+        $data['code'] = $workspace->getCode();
+        $data['expiration_date'] = $workspace->getEndDate()->getTimeStamp();
+        $data['user_amount'] = $this->workspaceManager->countUsers($workspace, true);
+        $storageUsed = $this->workspaceManager->getUsedStorage($workspace);
+        $data['storage_used'] = $utilities->formatFileSize($storageUsed);
+        $data['count_resources'] = $this->workspaceManager->countResources($workspace);
+
+        return $data;
     }
 }
