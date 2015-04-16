@@ -3,5 +3,5 @@
 {% block title %}{{ parent() ~ ' - ' ~ 'bad_request' | trans({}, 'platform') }}{% endblock %}
 
 {% block message %}
-    {{'workspace_expired' | trans({'%url%': url}, 'invoice') }}
+    {{'workspace_expired' | trans({'%url%': url}, 'invoice')|raw }}
 {% endblock %}
