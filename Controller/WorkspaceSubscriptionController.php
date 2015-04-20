@@ -100,7 +100,7 @@ class WorkspaceSubscriptionController extends Controller
 
         return new JsonResponse(array(
             'code' => '200',
-            'workspace' => $this->workspaceManager->toArray($workspace)
+            'workspace' => $this->toArray($workspace)
         ));
     }
 
@@ -125,7 +125,7 @@ class WorkspaceSubscriptionController extends Controller
 
         return new JsonResponse(array(
             'code' => '200',
-            'workspace' => $this->workspaceManager->toArray($workspace)
+            'workspace' => $this->toArray($workspace)
         ));
     }
 
