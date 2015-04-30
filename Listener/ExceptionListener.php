@@ -8,6 +8,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpFoundation\Response;
 use Claroline\CoreBundle\Controller\Exception\WorkspaceAccessDeniedException;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @DI\Service
@@ -17,14 +18,18 @@ class ExceptionListener
 
     /**
      * @DI\InjectParams({
-     *     "templating" = @DI\Inject("templating"),
-     *     "sc"         = @DI\Inject("security.context"),
-     *     "ch"         = @DI\Inject("claroline.config.platform_config_handler")
+     *     "templating"   = @DI\Inject("templating"),
+     *     "tokenStorage" = @DI\Inject("security.token_storage"),
+     *     "ch"           = @DI\Inject("claroline.config.platform_config_handler")
      * })
      */
-    public function __construct($templating, $sc, $ch)
+    public function __construct(
+        $templating,
+        TokenStorageInterface $tokenStorage,
+        $ch
+    )
     {
-        $this->sc = $sc;
+        $this->tokenStorage = $tokenStorage;
         $this->templating = $templating;
         $this->ch = $ch;
     }
@@ -44,7 +49,7 @@ class ExceptionListener
             $now = $now->getTimeStamp();
 
             if ($workspace->getEndDate()->getTimeStamp() < $now) {
-                $user = $this->sc->getToken()->getUser();
+                $user = $this->tokenStorage->getToken()->getUser();
                 $url = $this->ch->getParameter('formalibre_commercial_url') . "/invoice/workspace/renew/test/workspace/{$workspace->getId()}";
                 $content = $this->templating->render(
                     'FormaLibreWorkspaceSubscriptionBundle:exceptions:workspace_expired.html.twig',
