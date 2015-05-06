@@ -41,7 +41,7 @@ class ExceptionListener
     {
         // We get the exception object from the received event
         $exception = $event->getException();
-        $prev = $exception->getPrevious();(get_class($exception->getPrevious()));
+        $prev = $exception->getPrevious();
 
         if ($prev instanceof WorkspaceAccessDeniedException) {
             $workspace = $prev->getWorkspace();
